@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostGenius AI - Login</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans+Malayalam:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: slide-in-up-animation 0.6s ease;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .login-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-subtitle {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .login-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .login-label {
+            display: block;
+            color: #f1f5f9;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            color: #f1f5f9;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .login-input::placeholder {
+            color: rgba(203, 213, 225, 0.5);
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #a855f7;
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 1.5rem;
+        }
+
+        .forgot-password a {
+            color: #a855f7;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .forgot-password a:hover {
+            color: #ec4899;
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.6), 0 0 30px rgba(236, 72, 153, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            gap: 1rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(148, 163, 184, 0.2);
+        }
+
+        .divider-text {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .google-login {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            color: #f1f5f9;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .google-login:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: #a855f7;
+            transform: translateY(-2px);
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .login-footer a {
+            color: #a855f7;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .login-footer a:hover {
+            color: #ec4899;
+        }
+
+        .ai-illustration {
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translateY(-50%);
+            font-size: 10rem;
+            opacity: 0.1;
+            z-index: 1;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(-50px) translateY(0); }
+            50% { transform: translateY(-50px) translateY(-20px); }
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                max-width: 100%;
+                padding: 2rem;
+            }
+
+            .ai-illustration {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-background"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="navbar">
+            <div class="nav-logo">✨ PostGenius AI</div>
+            <div class="nav-right">
+                <select class="language-switcher" id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="ta">தமிழ்</option>
+                    <option value="ml">മലയാളം</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="te">తెలుగు</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <!-- AI Illustration -->
+    <div class="ai-illustration">🚀</div>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="login-header">
+                <div class="login-logo">✨</div>
+                <h1 class="login-title" data-i18n="login_title">Welcome Back</h1>
+                <p class="login-subtitle" data-i18n="login_subtitle">Sign in to your account</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <!-- Email -->
+                <div class="login-form-group">
+                    <label class="login-label" data-i18n="login_email">Email Address</label>
+                    <input type="email" name="email" class="login-input" placeholder="you@example.com" required>
+                </div>
+
+                <!-- Password -->
+                <div class="login-form-group">
+                    <label class="login-label" data-i18n="login_password">Password</label>
+                    <input type="password" name="password" class="login-input" placeholder="••••••••" required>
+                </div>
+
+                <!-- Forgot Password -->
+                <div class="forgot-password">
+                    <a href="#" data-i18n="login_forgot">Forgot Password?</a>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" class="login-btn" data-i18n="login_button">Sign In</button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span class="divider-text">OR</span>
+            </div>
+
+            <!-- Google Login -->
+            <button class="google-login" onclick="handleGoogleLogin()">
+                <div class="google-icon">G</div>
+                <span data-i18n="login_google">Continue with Google</span>
+            </button>
+
+            <!-- Create Account Link -->
+            <div class="login-footer">
+                <span data-i18n="login_no_account">Don't have an account?</span>
+                <a href="register.html" data-i18n="login_create">Create one</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/language.js"></script>
+    <script>
+        // Create particles
+        const particlesContainer = document.getElementById('particles');
+        if (particlesContainer) {
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 5 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.bottom = '-10px';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = Math.random() * 4 + 6 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Form handling
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const validator = new FormValidator('loginForm');
+            validator.clearErrors();
+
+            if (validator.validate()) {
+                // Show loading state
+                const submitBtn = loginForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.innerHTML = '<div class="spinner-loader" style="width: 20px; height: 20px; margin: 0 auto;"></div>';
+                submitBtn.disabled = true;
+
+                // Simulate login
+                setTimeout(() => {
+                    localStorage.setItem('userEmail', document.querySelector('input[name="email"]').value);
+                    localStorage.setItem('isLoggedIn', 'true');
+                    
+                    showNotification(getTranslation('success_generate'));
+                    
+                    setTimeout(() => {
+                        navigateTo('dashboard.html');
+                    }, 500);
+                }, 1500);
+            } else {
+                validator.showErrors();
+                showNotification(getTranslation('error_required'), 'error');
+            }
+        });
+
+        // Google Login Handler
+        function handleGoogleLogin() {
+            const btn = event.target.closest('.google-login');
+            btn.innerHTML = '<div class="spinner-loader" style="width: 20px; height: 20px; margin: 0 auto;"></div>';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                localStorage.setItem('userEmail', 'user@gmail.com');
+                localStorage.setItem('isLoggedIn', 'true');
+                showNotification('Google login successful!');
+                
+                setTimeout(() => {
+                    navigateTo('dashboard.html');
+                }, 500);
+            }, 1500);
+        }
+
+        // Add smooth input animations
+        document.querySelectorAll('.login-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.animation = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

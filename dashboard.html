@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostGenius AI - Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans+Malayalam:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .dashboard-wrapper {
+            padding-top: 4rem;
+            min-height: 100vh;
+            position: relative;
+            z-index: 10;
+        }
+
+        .dashboard-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slide-in-up-animation 0.6s ease;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        .generator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .input-panel {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            height: fit-content;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .panel-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            color: #f1f5f9;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.6);
+            color: #f1f5f9;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input::placeholder {
+            color: rgba(203, 213, 225, 0.5);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #a855f7;
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+            margin-top: 1.5rem;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.6), 0 0 30px rgba(236, 72, 153, 0.4);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .preview-panel {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: #cbd5e1;
+            padding: 4rem 2rem;
+        }
+
+        .preview-placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .output-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            animation: fade-in-animation 0.6s ease;
+        }
+
+        .output-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .output-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 20px 50px rgba(168, 85, 247, 0.2);
+        }
+
+        .output-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #a855f7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .output-content {
+            color: #f1f5f9;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .output-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .output-content::-webkit-scrollbar-track {
+            background: rgba(148, 163, 184, 0.1);
+            border-radius: 10px;
+        }
+
+        .output-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            border-radius: 10px;
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(15, 23, 42, 0.6);
+            color: #a855f7;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .action-btn:hover {
+            background: rgba(168, 85, 247, 0.1);
+            border-color: #a855f7;
+            transform: translateY(-2px);
+        }
+
+        .image-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            aspect-ratio: 1;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s;
+        }
+
+        .image-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .image-card:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .suggestions-section {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            animation: fade-in-animation 0.6s ease 0.3s both;
+        }
+
+        .suggestions-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .suggestion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .suggestion-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .suggestion-card:hover {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .suggestion-label {
+            font-size: 0.85rem;
+            color: #a855f7;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .suggestion-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 0.5rem;
+        }
+
+        .suggestion-details {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .hidden-content {
+            display: none;
+        }
+
+        .hidden-content.visible {
+            display: grid;
+        }
+
+        .features-section {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            margin-bottom: 3rem;
+        }
+
+        .features-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-item:hover {
+            border-color: #a855f7;
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-name {
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        @media (max-width: 1024px) {
+            .generator-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-section {
+                padding: 0 1rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .output-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-background"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="navbar">
+            <div class="nav-logo">✨ PostGenius AI</div>
+            <div class="nav-links">
+                <a data-i18n="nav_home" href="#home">Home</a>
+                <a data-i18n="nav_features" href="#features">Features</a>
+                <a data-i18n="nav_pricing" href="#pricing">Pricing</a>
+            </div>
+            <div class="nav-right">
+                <select class="language-switcher" id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="ta">தமிழ்</option>
+                    <option value="ml">മലയാളം</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="te">తెలుగు</option>
+                </select>
+                <button class="btn-icon" onclick="window.location.href='image-settings.html'">⚙️</button>
+                <button class="btn-icon" onclick="openProfile()">👤</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Wrapper -->
+    <div class="dashboard-wrapper">
+        <!-- Header -->
+        <div class="dashboard-section">
+            <div class="dashboard-header">
+                <h1 data-i18n="dashboard_title">AI Content Generator</h1>
+                <p data-i18n="dashboard_subtitle">Create viral content in seconds</p>
+            </div>
+        </div>
+
+        <!-- Generator Container -->
+        <div class="dashboard-section">
+            <div class="generator-container">
+                <!-- Input Panel -->
+                <div class="input-panel">
+                    <div class="panel-title">
+                        <div class="panel-icon">📝</div>
+                        <span>Content Inputs</span>
+                    </div>
+
+                    <form id="contentForm">
+                        <!-- Business Type -->
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="input_business">Business Type</label>
+                            <input type="text" name="business" class="form-input" placeholder="E-commerce, SaaS, Marketing..." required>
+                        </div>
+
+                        <!-- Target Audience -->
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="input_audience">Target Audience</label>
+                            <input type="text" name="audience" class="form-input" placeholder="Entrepreneurs, Students, etc..." required>
+                        </div>
+
+                        <!-- Platform Select -->
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="input_platform">Social Media Platform</label>
+                            <select name="platform" class="form-select" required>
+                                <option value="">Select a platform...</option>
+                                <option value="instagram" data-i18n="platform_instagram">Instagram</option>
+                                <option value="twitter" data-i18n="platform_twitter">Twitter</option>
+                                <option value="linkedin" data-i18n="platform_linkedin">LinkedIn</option>
+                                <option value="facebook" data-i18n="platform_facebook">Facebook</option>
+                                <option value="tiktok" data-i18n="platform_tiktok">TikTok</option>
+                                <option value="youtube" data-i18n="platform_youtube">YouTube</option>
+                            </select>
+                        </div>
+
+                        <!-- Marketing Goal -->
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="input_goal">Marketing Goal</label>
+                            <select name="goal" class="form-select" required>
+                                <option value="">Select a goal...</option>
+                                <option value="awareness" data-i18n="goal_awareness">Brand Awareness</option>
+                                <option value="engagement" data-i18n="goal_engagement">Engagement</option>
+                                <option value="sales" data-i18n="goal_sales">Sales</option>
+                                <option value="leads" data-i18n="goal_leads">Lead Generation</option>
+                                <option value="traffic" data-i18n="goal_traffic">Website Traffic</option>
+                            </select>
+                        </div>
+
+                        <!-- Image Provider Selection -->
+                        <div class="form-group">
+                            <label class="form-label">📷 Image Source</label>
+                            <select id="imageProvider" class="form-select">
+                                <option value="unsplash">📸 Free Stock Photos (Unsplash)</option>
+                                <option value="replicate">🤖 AI Generated (Replicate)</option>
+                                <option value="placeholder">🎨 Gradient Background</option>
+                            </select>
+                            <small style="color: #a855f7; display: block; margin-top: 0.5rem;">
+                                ℹ️ Replicate generates images in 30-60 seconds (requires free API key)
+                            </small>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <button type="submit" class="generate-btn" data-i18n="btn_generate">Generate Content</button>
+                    </form>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="preview-panel">
+                    <div id="previewContent" class="preview-placeholder">
+                        <div class="preview-placeholder-icon">🎨</div>
+                        <p>Fill in the form and click "Generate Content" to see your AI-powered content preview here.</p>
+                    </div>
+                    <div id="generatedImage" style="display: none; margin-top: 1rem;">
+                        <img id="imagePreview" src="" alt="Generated image" style="border-radius: 12px; width: 100%; height: auto;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Cards (hidden by default) -->
+        <div class="dashboard-section">
+            <div id="outputSection" class="hidden-content">
+                <div class="output-grid" id="outputGrid"></div>
+            </div>
+        </div>
+
+        <!-- AI Suggestions (hidden by default) -->
+        <div class="dashboard-section">
+            <div id="suggestionsSection" class="hidden-content">
+                <div class="suggestions-section">
+                    <div class="suggestions-title">
+                        <span>🧠 AI Post Strategy Suggestions</span>
+                    </div>
+                    <div class="suggestion-grid" id="suggestionsGrid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="dashboard-section">
+            <div class="features-section">
+                <h2 class="features-title">✨ Platform Features</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">📝</div>
+                        <div class="feature-name" data-i18n="feature_caption">AI Caption Generator</div>
+                        <p class="feature-desc" data-i18n="feature_caption_desc">Generate engaging captions for any platform</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎯</div>
+                        <div class="feature-name" data-i18n="feature_ad">Ad Copy Generator</div>
+                        <p class="feature-desc" data-i18n="feature_ad_desc">Create persuasive ad copy that converts</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">#️⃣</div>
+                        <div class="feature-name" data-i18n="feature_hashtag">Hashtag Optimizer</div>
+                        <p class="feature-desc" data-i18n="feature_hashtag_desc">Find the best hashtags for maximum reach</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⏰</div>
+                        <div class="feature-name" data-i18n="feature_scheduler">Social Media Scheduler</div>
+                        <p class="feature-desc" data-i18n="feature_scheduler_desc">Schedule posts at optimal times</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎨</div>
+                        <div class="feature-name" data-i18n="feature_optimize">Platform Optimization</div>
+                        <p class="feature-desc" data-i18n="feature_optimize_desc">Adapt content for each platform</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🚀</div>
+                        <div class="feature-name">AI Image Generator</div>
+                        <p class="feature-desc">Generate stunning images for your posts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4 data-i18n="footer_product">Product</h4>
+                    <ul>
+                        <li><a href="#" data-i18n="nav_features">Features</a></li>
+                        <li><a href="#" data-i18n="nav_pricing">Pricing</a></li>
+                        <li><a href="#">API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 data-i18n="footer_company">Company</h4>
+                    <ul>
+                        <li><a href="#" data-i18n="footer_about">About Us</a></li>
+                        <li><a href="#" data-i18n="footer_blog">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 data-i18n="footer_contact">Contact</h4>
+                    <ul>
+                        <li><a href="mailto:contact@postgenius.ai" data-i18n="footer_contact_email">contact@postgenius.ai</a></li>
+                        <li><a href="#" data-i18n="footer_support">Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Social</h4>
+                    <div class="social-icons">
+                        <div class="social-icon">𝕏</div>
+                        <div class="social-icon">f</div>
+                        <div class="social-icon">in</div>
+                        <div class="social-icon">▶️</div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/language.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/imageGenerator.js"></script>
+    <script>
+        // Initialize particles
+        const particlesContainer = document.getElementById('particles');
+        if (particlesContainer) {
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 5 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.bottom = '-10px';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = Math.random() * 4 + 6 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Initialize AI Generator and Image Generator
+        const aiGenerator = new AIContentGenerator();
+        const imageGenerator = new AdvancedImageGenerator();
+
+        // Form submission handler
+        document.getElementById('contentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const business = document.querySelector('input[name="business"]').value;
+            const audience = document.querySelector('input[name="audience"]').value;
+            const platform = document.querySelector('select[name="platform"]').value;
+            const goal = document.querySelector('select[name="goal"]').value;
+
+            if (!business || !platform || !goal) {
+                showNotification('Please fill all fields', 'error');
+                return;
+            }
+
+            // Show loading state
+            const generateBtn = document.querySelector('.generate-btn');
+            const originalText = generateBtn.textContent;
+            generateBtn.innerHTML = '<div class="spinner-loader" style="width: 20px; height: 20px; margin: 0 auto;"></div>';
+            generateBtn.disabled = true;
+
+            try {
+                // Generate content
+                const caption = aiGenerator.generateCaption(platform, business, audience, goal);
+                const adCopy = aiGenerator.generateAdCopy(platform, business, goal);
+                const hashtags = aiGenerator.generateHashtags(platform, business);
+                const musicSuggestion = aiGenerator.getSuggestedMusic(platform);
+                const postTiming = aiGenerator.getPostTiming(platform);
+                const tips = aiGenerator.getEngagementTips(platform);
+                const bestPlatform = aiGenerator.getPlatformRecommendation(business);
+
+                // Generate image with AdvancedImageGenerator
+                const imageProvider = document.getElementById('imageProvider')?.value || 'unsplash';
+                const imageResult = await imageGenerator.generate(caption, platform, { 
+                    provider: imageProvider,
+                    businessType: business 
+                });
+                
+                if (!imageResult.success) {
+                    showNotification(`Image generation failed: ${imageResult.error}. Falling back to placeholder.`, 'warning');
+                }
+
+                const imageUrl = imageResult.url || 'data:image/svg+xml,...'; // Fallback
+
+                // Display output cards
+                displayOutputCards(caption, adCopy, hashtags, imageUrl);
+                
+                // Display suggestions
+                displaySuggestions(musicSuggestion, postTiming, tips, bestPlatform);
+
+                // Display image
+                displayImage(imageUrl);
+
+                // Reset button
+                generateBtn.textContent = originalText;
+                generateBtn.disabled = false;
+
+                showNotification(`Content generated! (Image: ${imageResult.provider})`);
+            } catch (error) {
+                console.error('Generation error:', error);
+                generateBtn.textContent = originalText;
+                generateBtn.disabled = false;
+                showNotification('Error generating content. Please try again.', 'error');
+            }
+        });
+
+        function displayOutputCards(caption, adCopy, hashtags, imageUrl) {
+            const outputGrid = document.getElementById('outputGrid');
+            const outputSection = document.getElementById('outputSection');
+
+            outputGrid.innerHTML = `
+                <div class="output-card">
+                    <div class="output-title">Social Media Caption</div>
+                    <div class="output-content">${caption}</div>
+                    <div class="output-actions">
+                        <button class="action-btn" onclick="copyToClipboard('${caption}')">📋 Copy</button>
+                        <button class="action-btn" onclick="editContent(this)">✏️ Edit</button>
+                        <button class="action-btn" onclick="regenerateCaption()">🔄 Regen</button>
+                    </div>
+                </div>
+
+                <div class="output-card">
+                    <div class="output-title">Ad Copy</div>
+                    <div class="output-content">${adCopy}</div>
+                    <div class="output-actions">
+                        <button class="action-btn" onclick="copyToClipboard('${adCopy}')">📋 Copy</button>
+                        <button class="action-btn" onclick="editContent(this)">✏️ Edit</button>
+                        <button class="action-btn" onclick="regenerateAd()">🔄 Regen</button>
+                    </div>
+                </div>
+
+                <div class="output-card">
+                    <div class="output-title">Hashtags</div>
+                    <div class="output-content" style="font-size: 0.9rem;">${hashtags}</div>
+                    <div class="output-actions">
+                        <button class="action-btn" onclick="copyToClipboard('${hashtags}')">📋 Copy</button>
+                        <button class="action-btn" onclick="editContent(this)">✏️ Edit</button>
+                    </div>
+                </div>
+
+                <div class="output-card">
+                    <div class="output-title">Post Preview</div>
+                    <div class="output-content" style="margin: 0;">
+                        <div class="image-card" style="margin-bottom: 0.5rem;">
+                            <img src="${imageUrl}" alt="Generated image" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
+                        </div>
+                        <p style="font-size: 0.85rem; color: #cbd5e1;">Caption: ${caption.substring(0, 100)}...</p>
+                    </div>
+                    <div class="output-actions">
+                        <button class="action-btn" onclick="openShare()">🔗 Share</button>
+                        <button class="action-btn" onclick="downloadImage('${imageUrl}')">⬇️ Download</button>
+                    </div>
+                </div>
+            `;
+
+            outputSection.classList.add('visible');
+            outputSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function displaySuggestions(music, timing, tips, platform) {
+            const suggestionsGrid = document.getElementById('suggestionsGrid');
+            const suggestionsSection = document.getElementById('suggestionsSection');
+
+            suggestionsGrid.innerHTML = `
+                <div class="suggestion-card">
+                    <div class="suggestion-label">⏰ Best Time</div>
+                    <div class="suggestion-value">${timing.time}</div>
+                    <div class="suggestion-details">${timing.day} • ${timing.reason}</div>
+                </div>
+
+                <div class="suggestion-card">
+                    <div class="suggestion-label">🎵 Music Vibe</div>
+                    <div class="suggestion-value">${music.song}</div>
+                    <div class="suggestion-details">${music.artist} • ${music.mood}</div>
+                </div>
+
+                <div class="suggestion-card">
+                    <div class="suggestion-label">📱 Best Platform</div>
+                    <div class="suggestion-value">${platform}</div>
+                    <div class="suggestion-details">Optimized for maximum reach</div>
+                </div>
+
+                <div class="suggestion-card">
+                    <div class="suggestion-label">💡 Top Tip</div>
+                    <div class="suggestion-value">${tips[0].substring(0, 30)}...</div>
+                    <div class="suggestion-details">${tips[0]}</div>
+                </div>
+            `;
+
+            suggestionsSection.classList.add('visible');
+        }
+
+        function displayImage(imageUrl) {
+            const generatedImage = document.getElementById('generatedImage');
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.src = imageUrl;
+            generatedImage.style.display = 'block';
+        }
+
+        function editContent(btn) {
+            const content = btn.parentElement.previousElementSibling.textContent;
+            const newContent = prompt('Edit content:', content);
+            if (newContent) {
+                btn.parentElement.previousElementSibling.textContent = newContent;
+            }
+        }
+
+        function regenerateCaption() {
+            showNotification('Regenerating caption...');
+            // Logic to regenerate
+        }
+
+        function regenerateAd() {
+            showNotification('Regenerating ad copy...');
+            // Logic to regenerate
+        }
+
+        function openShare() {
+            navigateTo('share.html');
+        }
+
+        function downloadImage(url) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'postgenius_image.jpg';
+            link.click();
+        }
+
+        function openProfile() {
+            showNotification('Profile settings coming soon!');
+        }
+    </script>
+</body>
+</html>
