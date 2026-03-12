@@ -633,6 +633,7 @@
     <script src="js/language.js"></script>
     <script src="js/ai.js"></script>
     <script src="js/imageGenerator.js"></script>
+    <script src="js/claudeAI.js"></script>
     <script>
         // Initialize particles
         const particlesContainer = document.getElementById('particles');
@@ -654,6 +655,11 @@
         const aiGenerator = new AIContentGenerator();
         const imageGenerator = new AdvancedImageGenerator();
 
+        // Initialize Claude AI if API key is available
+        if (localStorage.getItem('claudeApiKey')) {
+            window.claudeAI.setApiKey(localStorage.getItem('claudeApiKey'));
+        }
+
         // Form submission handler
         document.getElementById('contentForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -662,6 +668,7 @@
             const audience = document.querySelector('input[name="audience"]').value;
             const platform = document.querySelector('select[name="platform"]').value;
             const goal = document.querySelector('select[name="goal"]').value;
+            const topic = document.querySelector('input[name="business"]').value;
 
             if (!business || !platform || !goal) {
                 showNotification('Please fill all fields', 'error');
@@ -675,13 +682,29 @@
             generateBtn.disabled = true;
 
             try {
+                // Check if Claude AI is enabled
+                const useClaude = localStorage.getItem('useClaude') !== 'false' && localStorage.getItem('claudeApiKey');
+                
                 // Generate content
-                const caption = aiGenerator.generateCaption(platform, business, audience, goal);
-                const adCopy = aiGenerator.generateAdCopy(platform, business, goal);
-                const hashtags = aiGenerator.generateHashtags(platform, business);
+                let caption, adCopy, hashtags, tips;
+                
+                if (useClaude) {
+                    // Use Claude AI for content generation
+                    showNotification('🤖 Generating content with Claude AI...', 'info');
+                    caption = await window.claudeAI.generateCaption(platform, business, topic, audience, 'engaging');
+                    adCopy = await window.claudeAI.generateAdCopy(platform, business, goal, audience);
+                    hashtags = await window.claudeAI.generateHashtags(platform, topic, business);
+                    tips = await window.claudeAI.generateEngagementTips(platform, business, topic);
+                } else {
+                    // Use fallback AI Generator
+                    caption = aiGenerator.generateCaption(platform, business, audience, goal);
+                    adCopy = aiGenerator.generateAdCopy(platform, business, goal);
+                    hashtags = aiGenerator.generateHashtags(platform, business);
+                    tips = aiGenerator.getEngagementTips(platform);
+                }
+
                 const musicSuggestion = aiGenerator.getSuggestedMusic(platform);
                 const postTiming = aiGenerator.getPostTiming(platform);
-                const tips = aiGenerator.getEngagementTips(platform);
                 const bestPlatform = aiGenerator.getPlatformRecommendation(business);
 
                 // Generate image with AdvancedImageGenerator
@@ -710,7 +733,8 @@
                 generateBtn.textContent = originalText;
                 generateBtn.disabled = false;
 
-                showNotification(`Content generated! (Image: ${imageResult.provider})`);
+                const aiSource = useClaude ? 'Claude AI' : 'AI';
+                showNotification(`Content generated! (${aiSource} + Image: ${imageResult.provider})`);
             } catch (error) {
                 console.error('Generation error:', error);
                 generateBtn.textContent = originalText;
